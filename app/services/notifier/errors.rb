@@ -1,14 +1,29 @@
 module Notifier
-  class InvalidStateError < Exception
+  attr_reader :message, :wrapped_exception
+
+  # Meant to be caught and handled
+  class NotifierError < StandardError
+    def init(message, wrapped_exception = nil)
+      @message = message
+      @wrapped_exception = wrapped_exception
+    end
+
   end
-  class AuthError < StandardError
+
+  # Should crash
+  class NotifierException < Exception
   end
-  class ThrottledError < StandardError
+
+  class InvalidStateException < NotifierException
   end
-  class MalformedRequestException < Exception
+  class AuthError < NotifierError
+  end
+  class ThrottledError < NotifierError
+  end
+  class MalformedRequestException < NotifierException
   end
 
   # These should generally be retried
-  class ExternalServiceError < StandardError
+  class ExternalServiceError < NotifierError
   end
 end
